@@ -61,5 +61,13 @@ namespace Common.Utilities.Validation
             
             return false;
         }
+
+        public static bool UserName(string value)
+        {
+            var _value = value.Trim();
+            if (Regex.IsMatch(_value, @"[A-Za-z][A-Za-z0-9]")) return true;
+
+            return false;
+        }
     }
 }

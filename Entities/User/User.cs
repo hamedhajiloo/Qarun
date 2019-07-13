@@ -13,10 +13,10 @@ namespace Entities
     {
         #region Properties
 
-        [DisplayName("نام و نام خانوادگی")]
+        [DisplayName("نام نمایشی")]
         [Required(ErrorMessage = DataAnotations.EnterMessage)]
         [StringLength(100)]
-        public string FullName { get; set; }
+        public string DisplayName { get; set; }
 
         [DisplayName("وضعیت")]
         public bool IsActive { get; set; } = true;
