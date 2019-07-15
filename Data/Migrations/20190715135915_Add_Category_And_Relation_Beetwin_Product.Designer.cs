@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190715135915_Add_Category_And_Relation_Beetwin_Product")]
+    partial class Add_Category_And_Relation_Beetwin_Product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,34 +111,6 @@ namespace Data.Migrations
                     b.ToTable("CommentVotes");
                 });
 
-            modelBuilder.Entity("Entities.Customer", b =>
-                {
-                    b.Property<string>("Id");
-
-                    b.Property<int>("Claim");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Customers");
-                });
-
-            modelBuilder.Entity("Entities.CustomerOrder", b =>
-                {
-                    b.Property<long>("Id");
-
-                    b.Property<string>("CustomerId");
-
-                    b.Property<long>("OrderId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("CustomerOrders");
-                });
-
             modelBuilder.Entity("Entities.Files.DefaultLogo", b =>
                 {
                     b.Property<int>("Id")
@@ -169,153 +143,6 @@ namespace Data.Migrations
                     b.ToTable("Files_DefaultLogos");
                 });
 
-            modelBuilder.Entity("Entities.Order", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired();
-
-                    b.Property<bool>("Deleted");
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("FirstName");
-
-                    b.Property<int>("InCityShippingCost");
-
-                    b.Property<string>("LastName");
-
-                    b.Property<DateTime>("LastUpdate");
-
-                    b.Property<string>("Mobile");
-
-                    b.Property<DateTime>("OrderDate");
-
-                    b.Property<int>("OrderPaymentType");
-
-                    b.Property<int>("OrderStatus");
-
-                    b.Property<bool?>("PaySucceeded");
-
-                    b.Property<DateTime?>("PaymentDate");
-
-                    b.Property<string>("Phone");
-
-                    b.Property<string>("PostalCode");
-
-                    b.Property<int>("Price");
-
-                    b.Property<bool>("RedirectedToBank");
-
-                    b.Property<int>("TotalAmount");
-
-                    b.Property<int>("TotalDiscount");
-
-                    b.Property<int>("TotalShippingCost");
-
-                    b.Property<long?>("UniqueCode");
-
-                    b.Property<string>("UserAddress");
-
-                    b.Property<string>("UserIPAddress");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("Entities.OrderSeller", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("OrderId");
-
-                    b.Property<string>("SellerId");
-
-                    b.Property<DateTime?>("SendDate");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("OrderSellers");
-                });
-
-            modelBuilder.Entity("Entities.OrderShopDetails", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Count");
-
-                    b.Property<bool>("Deleted");
-
-                    b.Property<DateTime>("LastUpdate");
-
-                    b.Property<long>("OrderShopId");
-
-                    b.Property<int>("Price");
-
-                    b.Property<long>("ProductId");
-
-                    b.Property<string>("SellerId")
-                        .IsRequired();
-
-                    b.Property<float>("Tax");
-
-                    b.Property<int>("TotalAmount");
-
-                    b.Property<int>("TotalDiscount");
-
-                    b.Property<float>("TotalWeight");
-
-                    b.Property<int>("UnitAmount");
-
-                    b.Property<int>("UnitDiscount");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderShopId")
-                        .HasName("Group1");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("OrderShopDetails");
-                });
-
-            modelBuilder.Entity("Entities.OrderStatusLog", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateChange");
-
-                    b.Property<string>("Description");
-
-                    b.Property<long>("OrderId");
-
-                    b.Property<int>("OrderStatus");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderStatusLogs");
-                });
-
             modelBuilder.Entity("Entities.Picture", b =>
                 {
                     b.Property<int>("Id")
@@ -346,8 +173,6 @@ namespace Data.Migrations
                     b.Property<int?>("Like");
 
                     b.Property<decimal>("Price");
-
-                    b.Property<int>("SalesNumber");
 
                     b.Property<string>("Title")
                         .IsRequired();
@@ -399,17 +224,6 @@ namespace Data.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("Entities.Seller", b =>
-                {
-                    b.Property<string>("Id");
-
-                    b.Property<int>("OrderLimitation");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Sellers");
-                });
-
             modelBuilder.Entity("Entities.Setting", b =>
                 {
                     b.Property<int>("Id")
@@ -429,30 +243,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Settings");
-                });
-
-            modelBuilder.Entity("Entities.ShopingCart", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Count");
-
-                    b.Property<long>("ProductId");
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId", "ProductId")
-                        .IsUnique()
-                        .HasName("Group1");
-
-                    b.ToTable("ShopingCarts");
                 });
 
             modelBuilder.Entity("Entities.User", b =>
@@ -527,78 +317,6 @@ namespace Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Entities.UserTransaction", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CID");
-
-                    b.Property<DateTime>("InsertDate");
-
-                    b.Property<DateTime?>("PaidDate");
-
-                    b.Property<int>("PaymentState");
-
-                    b.Property<int>("PaymentType");
-
-                    b.Property<long>("Price");
-
-                    b.Property<string>("RRN");
-
-                    b.Property<string>("ReferenceNumber");
-
-                    b.Property<string>("ReservationCode");
-
-                    b.Property<string>("SecurePan");
-
-                    b.Property<string>("State");
-
-                    b.Property<string>("TRACENO");
-
-                    b.Property<int>("Type");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("User_Transactions");
-                });
-
-            modelBuilder.Entity("Entities.WalletLog", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("Amount");
-
-                    b.Property<int>("ChargeOperation");
-
-                    b.Property<int>("ChargeType");
-
-                    b.Property<DateTime>("InsertDate");
-
-                    b.Property<long?>("OrderId");
-
-                    b.Property<string>("UserId");
-
-                    b.Property<long?>("UserTransactionId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserTransactionId");
-
-                    b.ToTable("WalletLogs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -730,77 +448,6 @@ namespace Data.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Entities.Customer", b =>
-                {
-                    b.HasOne("Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.CustomerOrder", b =>
-                {
-                    b.HasOne("Entities.Customer")
-                        .WithMany("CustomerOrders")
-                        .HasForeignKey("CustomerId");
-
-                    b.HasOne("Entities.UserTransaction", "UserTransaction")
-                        .WithOne("CustomerOrder")
-                        .HasForeignKey("Entities.CustomerOrder", "Id")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entities.Order", "Order")
-                        .WithMany("CustomerOrders")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.Order", b =>
-                {
-                    b.HasOne("Entities.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.OrderSeller", b =>
-                {
-                    b.HasOne("Entities.Order", "Order")
-                        .WithMany("OrderSellers")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entities.Seller", "Seller")
-                        .WithMany("OrderSellers")
-                        .HasForeignKey("SellerId");
-                });
-
-            modelBuilder.Entity("Entities.OrderShopDetails", b =>
-                {
-                    b.HasOne("Entities.OrderSeller", "OrderShop")
-                        .WithMany("OrderShopDetails")
-                        .HasForeignKey("OrderShopId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entities.Seller", "Seller")
-                        .WithMany()
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.OrderStatusLog", b =>
-                {
-                    b.HasOne("Entities.Order", "Order")
-                        .WithMany("OrderStatusLogs")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("Entities.Picture", b =>
                 {
                     b.HasOne("Entities.Product")
@@ -819,49 +466,6 @@ namespace Data.Migrations
                         .WithMany("ProductCategories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.Seller", b =>
-                {
-                    b.HasOne("Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.ShopingCart", b =>
-                {
-                    b.HasOne("Entities.Product", "Product")
-                        .WithMany("ShopingCarts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entities.User", "User")
-                        .WithMany("ShopingCarts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.UserTransaction", b =>
-                {
-                    b.HasOne("Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Entities.WalletLog", b =>
-                {
-                    b.HasOne("Entities.Order", "Order")
-                        .WithMany("WalletLogs")
-                        .HasForeignKey("OrderId");
-
-                    b.HasOne("Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("Entities.UserTransaction", "UserTransaction")
-                        .WithMany("WalletLogs")
-                        .HasForeignKey("UserTransactionId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

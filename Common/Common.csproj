@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.3" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="2.2.0" />
     <PackageReference Include="Pluralize.NET" Version="0.1.84" />
+    <PackageReference Include="Serenity.Web" Version="3.9.9" />
     <PackageReference Include="System.Drawing.Common" Version="4.6.0-preview4.19212.13" />
   </ItemGroup>
 

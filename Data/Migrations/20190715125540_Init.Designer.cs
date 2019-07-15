@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190713142647_Init")]
+    [Migration("20190715125540_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,146 @@ namespace Data.Migrations
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Entities.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("UserId");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("Entities.Comments.Comment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("InsertDate");
+
+                    b.Property<long?>("ParentId");
+
+                    b.Property<long>("ProductId");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Entities.Comments.CommentVote", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("CommentId");
+
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("Vote");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("CommentId", "UserId")
+                        .IsUnique()
+                        .HasName("Comment_Vote_Group")
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("CommentVotes");
+                });
+
+            modelBuilder.Entity("Entities.Files.DefaultLogo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Category")
+                        .IsRequired();
+
+                    b.Property<string>("CustomerAvatarUrl")
+                        .IsRequired();
+
+                    b.Property<string>("Loading")
+                        .IsRequired();
+
+                    b.Property<string>("ShopLogoUrl")
+                        .IsRequired();
+
+                    b.Property<string>("ShopMainImageUrl")
+                        .IsRequired();
+
+                    b.Property<string>("ShopOwnerAvatarUrl")
+                        .IsRequired();
+
+                    b.Property<string>("UserAvatarUrl")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files_DefaultLogos");
+                });
+
+            modelBuilder.Entity("Entities.Picture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("ProductId");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Pictures");
+                });
+
+            modelBuilder.Entity("Entities.Products.Product", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<int?>("Like");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
+                });
 
             modelBuilder.Entity("Entities.Role", b =>
                 {
@@ -78,21 +218,32 @@ namespace Data.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("BarCode");
+
+                    b.Property<string>("Biography")
+                        .HasMaxLength(100);
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
+
+                    b.Property<string>("DisplayName")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
                     b.Property<bool>("IsActive");
 
                     b.Property<DateTimeOffset?>("LastLoginDate");
+
+                    b.Property<double>("Lat");
+
+                    b.Property<double>("Lng");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -108,9 +259,13 @@ namespace Data.Migrations
 
                     b.Property<string>("PhoneNumber");
 
+                    b.Property<bool>("PhoneNumberConfirm");
+
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
+
+                    b.Property<string>("Shaba");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -214,6 +369,49 @@ namespace Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Entities.Address", b =>
+                {
+                    b.HasOne("Entities.User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Entities.Comments.Comment", b =>
+                {
+                    b.HasOne("Entities.Comments.Comment", "Parent")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("Entities.Products.Product", "Product")
+                        .WithMany("Comments")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Entities.Comments.CommentVote", b =>
+                {
+                    b.HasOne("Entities.Comments.Comment", "Comment")
+                        .WithMany("CommentVote")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Entities.Picture", b =>
+                {
+                    b.HasOne("Entities.Products.Product")
+                        .WithMany("Pictures")
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

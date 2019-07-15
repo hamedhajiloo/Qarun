@@ -11,10 +11,11 @@ namespace WebFramework.Middlewares
         private readonly IHostingEnvironment _env;
         private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
 
-        public CustomMessage4DataAnnotationsMiddleware(RequestDelegate next, IHostingEnvironment env)
+        public CustomMessage4DataAnnotationsMiddleware(RequestDelegate next, IHostingEnvironment env, ILogger<CustomExceptionHandlerMiddleware> logger)
         {
             _next = next;
             _env = env;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)

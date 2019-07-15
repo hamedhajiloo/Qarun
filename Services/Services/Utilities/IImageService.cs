@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Services.Services.Utilities
+namespace Services
 {
     public interface IImageService
     {

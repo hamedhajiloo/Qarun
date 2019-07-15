@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Services.Services.Utilities
+namespace Services
 {
     public class ImageService : IImageService
     {

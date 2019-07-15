@@ -25,15 +25,15 @@ namespace Services
 
         public async Task<AccessToken> GenerateAsync(User user)
         {
-            var secretKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
+            byte[] secretKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
+            SigningCredentials signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
 
-            var encryptionkey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.Encryptkey); //must be 16 character
-            var encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey), SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
+            byte[] encryptionkey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.Encryptkey); //must be 16 character
+            EncryptingCredentials encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey), SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
 
-            var claims = await _getClaimsAsync(user);
+            IEnumerable<Claim> claims = await _getClaimsAsync(user);
 
-            var descriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
             {
                 Issuer = _siteSetting.JwtSettings.Issuer,
                 Audience = _siteSetting.JwtSettings.Audience,
@@ -49,9 +49,9 @@ namespace Services
             //JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
             //JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 
-            var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
+            JwtSecurityToken securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
 
             //string encryptedJwt = tokenHandler.WriteToken(securityToken);
 
@@ -60,10 +60,12 @@ namespace Services
 
         private async Task<IEnumerable<Claim>> _getClaimsAsync(User user)
         {
-            var result = await signInManager.ClaimsFactory.CreateAsync(user);
+            ClaimsPrincipal result = await signInManager.ClaimsFactory.CreateAsync(user);
             //add custom claims
-            var list = new List<Claim>(result.Claims);
-            list.Add(new Claim(ClaimTypes.MobilePhone, "09123456987"));
+            List<Claim> list = new List<Claim>(result.Claims)
+            {
+                new Claim(ClaimTypes.MobilePhone, "09123456987")
+            };
 
             //JwtRegisteredClaimNames.Sub
             //var securityStampClaimType = new ClaimsIdentityOptions().SecurityStampClaimType;
