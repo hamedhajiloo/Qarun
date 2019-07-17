@@ -50,12 +50,36 @@ namespace Data.Migrations
                     PhoneNumberConfirm = table.Column<bool>(nullable: false),
                     Lat = table.Column<double>(nullable: false),
                     Lng = table.Column<double>(nullable: false),
-                    Shaba = table.Column<string>(nullable: true),
-                    BarCode = table.Column<string>(nullable: true)
+                    IBAN = table.Column<string>(nullable: true),
+                    BarCode = table.Column<string>(nullable: true),
+                    ChargeAmount = table.Column<decimal>(nullable: false),
+                    SellingAmount = table.Column<decimal>(nullable: false),
+                    MarketingAmount = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Titel = table.Column<string>(nullable: true),
+                    ParentId = table.Column<int>(nullable: true),
+                    Picture = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Categories_Categories_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,6 +110,8 @@ namespace Data.Migrations
                     Title = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Price = table.Column<decimal>(nullable: false),
+                    Discount = table.Column<decimal>(nullable: false),
+                    SalesNumber = table.Column<int>(nullable: false),
                     Like = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -237,6 +263,68 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CustomerId = table.Column<string>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    OrderDate = table.Column<DateTime>(nullable: false),
+                    LastUpdate = table.Column<DateTime>(nullable: false),
+                    OrderPaymentType = table.Column<int>(nullable: false),
+                    PaymentDate = table.Column<DateTime>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    TotalAmount = table.Column<int>(nullable: false),
+                    TotalDiscount = table.Column<int>(nullable: false),
+                    Price = table.Column<int>(nullable: false),
+                    RedirectedToBank = table.Column<bool>(nullable: false),
+                    PaySucceeded = table.Column<bool>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User_Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Price = table.Column<long>(nullable: false),
+                    InsertDate = table.Column<DateTime>(nullable: false),
+                    ReservationCode = table.Column<string>(nullable: true),
+                    ReferenceNumber = table.Column<string>(nullable: true),
+                    PaymentState = table.Column<int>(nullable: false),
+                    State = table.Column<string>(nullable: true),
+                    PaidDate = table.Column<DateTime>(nullable: true),
+                    Type = table.Column<int>(nullable: false),
+                    PaymentType = table.Column<int>(nullable: false),
+                    TRACENO = table.Column<string>(nullable: true),
+                    RRN = table.Column<string>(nullable: true),
+                    CID = table.Column<string>(nullable: true),
+                    SecurePan = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_User_Transactions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -288,6 +376,127 @@ namespace Data.Migrations
                         name: "FK_Pictures_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductCategories",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCategories", x => new { x.CategoryId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopingCarts",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
+                    Count = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopingCarts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShopingCarts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShopingCarts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderChildren",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false),
+                    OrderId = table.Column<long>(nullable: false),
+                    OrderStatus = table.Column<int>(nullable: false),
+                    SendDate = table.Column<DateTime>(nullable: true),
+                    SellerId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderChildren", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderChildren_User_Transactions_Id",
+                        column: x => x.Id,
+                        principalTable: "User_Transactions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderChildren_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderChildren_AspNetUsers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WalletLogs",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Amount = table.Column<long>(nullable: false),
+                    InsertDate = table.Column<DateTime>(nullable: false),
+                    ChargeOperation = table.Column<int>(nullable: false),
+                    ChargeType = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    OrderId = table.Column<long>(nullable: true),
+                    UserTransactionId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WalletLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WalletLogs_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_WalletLogs_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_WalletLogs_User_Transactions_UserTransactionId",
+                        column: x => x.UserTransactionId,
+                        principalTable: "User_Transactions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -364,6 +573,11 @@ namespace Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_ParentId",
+                table: "Categories",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_ParentId",
                 table: "Comments",
                 column: "ParentId");
@@ -391,9 +605,60 @@ namespace Data.Migrations
                 filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderChildren_OrderId",
+                table: "OrderChildren",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderChildren_SellerId",
+                table: "OrderChildren",
+                column: "SellerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CustomerId",
+                table: "Orders",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pictures_ProductId",
                 table: "Pictures",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductCategories_ProductId",
+                table: "ProductCategories",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopingCarts_ProductId",
+                table: "ShopingCarts",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "Group1",
+                table: "ShopingCarts",
+                columns: new[] { "UserId", "ProductId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Transactions_UserId",
+                table: "User_Transactions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WalletLogs_OrderId",
+                table: "WalletLogs",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WalletLogs_UserId",
+                table: "WalletLogs",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WalletLogs_UserTransactionId",
+                table: "WalletLogs",
+                column: "UserTransactionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -423,16 +688,37 @@ namespace Data.Migrations
                 name: "Files_DefaultLogos");
 
             migrationBuilder.DropTable(
+                name: "OrderChildren");
+
+            migrationBuilder.DropTable(
                 name: "Pictures");
 
             migrationBuilder.DropTable(
+                name: "ProductCategories");
+
+            migrationBuilder.DropTable(
                 name: "Settings");
+
+            migrationBuilder.DropTable(
+                name: "ShopingCarts");
+
+            migrationBuilder.DropTable(
+                name: "WalletLogs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "User_Transactions");
 
             migrationBuilder.DropTable(
                 name: "Products");

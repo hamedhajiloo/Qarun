@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Entities
@@ -13,27 +14,13 @@ namespace Entities
         /// </summary>
         [Required]
         public string CustomerId { get; set; }
-        public virtual Customer Customer { get; set; }
-
-        /// <summary>
-        /// نام خریدار
-        /// </summary>
-        public string FirstName { get; set; }
-
-        /// <summary>
-        /// نام خانوادگی خریدار
-        /// </summary>
-        public string LastName { get; set; }
-
-        /// <summary>
-        /// تلفن ضروری
-        /// </summary>
-        public string Phone { get; set; }
+        [ForeignKey(nameof(CustomerId))]
+        public virtual User Customer { get; set; }
 
         /// <summary>
         /// تلفن همراه
         /// </summary>
-        public string Mobile { get; set; }
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// تاریخ سفارش
@@ -71,42 +58,10 @@ namespace Entities
         public int TotalDiscount { get; set; }
 
         /// <summary>
-        /// : قیمت نهایی کل - تخفیف + مالیات + هزینه ارسال  
+        /// : قیمت نهایی کل - تخفیف + مالیات  
         /// </summary>
         public int Price { get; set; }
 
-        /// <summary>
-        /// آدرس کاربر
-        /// </summary>
-        public string UserAddress { get; set; }
-
-        /// <summary>
-        /// کد پستی کاربر
-        /// </summary>
-        public string PostalCode { get; set; }
-
-        /// <summary>
-        /// آیپی کاربر
-        /// </summary>
-        public string UserIPAddress { get; set; }
-
-        /// <summary>
-        /// حذف شده
-        /// </summary>
-        public bool Deleted { get; set; }
-
-        public OrderStatus OrderStatus { get; set; }
-
-        /// <summary>
-        /// هزینه کل ارسال
-        /// </summary>
-        public int TotalShippingCost { get; set; }
-
-
-        /// <summary>
-        /// کد منحصر به فرد پس از پرداخت
-        /// </summary>
-        public long? UniqueCode { get; set; }
 
         /// <summary>
         /// به بانک هدایت شده یا خیر ؟
@@ -117,15 +72,10 @@ namespace Entities
         /// پرداخت موفق بوده ؟
         /// </summary>
         public bool? PaySucceeded { get; set; }
-        public int InCityShippingCost { get; set; }
 
 
-        public virtual IList<OrderSeller> OrderSellers { get; set; }
-        public virtual IList<CustomerOrder> CustomerOrders { get; set; }
-        public virtual IList<OrderStatusLog> OrderStatusLogs { get; set; }
+        public virtual IList<OrderChild> OrderChilds { get; set; }
         public virtual List<WalletLog> WalletLogs { get; set; }
-
-
 
     }
 }

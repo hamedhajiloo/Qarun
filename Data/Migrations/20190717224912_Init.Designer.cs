@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190715143614_Shoping_Cart")]
-    partial class Shoping_Cart
+    [Migration("20190717224912_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -141,6 +141,65 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Files_DefaultLogos");
+                });
+
+            modelBuilder.Entity("Entities.Order", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired();
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("LastUpdate");
+
+                    b.Property<DateTime>("OrderDate");
+
+                    b.Property<int>("OrderPaymentType");
+
+                    b.Property<bool?>("PaySucceeded");
+
+                    b.Property<DateTime?>("PaymentDate");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<int>("Price");
+
+                    b.Property<bool>("RedirectedToBank");
+
+                    b.Property<int>("TotalAmount");
+
+                    b.Property<int>("TotalDiscount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Entities.OrderChild", b =>
+                {
+                    b.Property<long>("Id");
+
+                    b.Property<long>("OrderId");
+
+                    b.Property<int>("OrderStatus");
+
+                    b.Property<string>("SellerId");
+
+                    b.Property<DateTime?>("SendDate");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("OrderChildren");
                 });
 
             modelBuilder.Entity("Entities.Picture", b =>
@@ -286,6 +345,8 @@ namespace Data.Migrations
                     b.Property<string>("Biography")
                         .HasMaxLength(100);
 
+                    b.Property<decimal>("ChargeAmount");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -296,6 +357,8 @@ namespace Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("IBAN");
 
                     b.Property<bool>("IsActive");
 
@@ -308,6 +371,8 @@ namespace Data.Migrations
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<decimal>("MarketingAmount");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -325,7 +390,7 @@ namespace Data.Migrations
 
                     b.Property<string>("SecurityStamp");
 
-                    b.Property<string>("Shaba");
+                    b.Property<decimal>("SellingAmount");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -343,6 +408,78 @@ namespace Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Entities.UserTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CID");
+
+                    b.Property<DateTime>("InsertDate");
+
+                    b.Property<DateTime?>("PaidDate");
+
+                    b.Property<int>("PaymentState");
+
+                    b.Property<int>("PaymentType");
+
+                    b.Property<long>("Price");
+
+                    b.Property<string>("RRN");
+
+                    b.Property<string>("ReferenceNumber");
+
+                    b.Property<string>("ReservationCode");
+
+                    b.Property<string>("SecurePan");
+
+                    b.Property<string>("State");
+
+                    b.Property<string>("TRACENO");
+
+                    b.Property<int>("Type");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("User_Transactions");
+                });
+
+            modelBuilder.Entity("Entities.WalletLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("Amount");
+
+                    b.Property<int>("ChargeOperation");
+
+                    b.Property<int>("ChargeType");
+
+                    b.Property<DateTime>("InsertDate");
+
+                    b.Property<long?>("OrderId");
+
+                    b.Property<string>("UserId");
+
+                    b.Property<long?>("UserTransactionId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserTransactionId");
+
+                    b.ToTable("WalletLogs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -474,6 +611,31 @@ namespace Data.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("Entities.Order", b =>
+                {
+                    b.HasOne("Entities.User", "Customer")
+                        .WithMany("CustomerOrders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Entities.OrderChild", b =>
+                {
+                    b.HasOne("Entities.UserTransaction", "UserTransaction")
+                        .WithOne("CustomerOrder")
+                        .HasForeignKey("Entities.OrderChild", "Id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.Order", "Order")
+                        .WithMany("OrderChilds")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.User", "Seller")
+                        .WithMany("SellerOrders")
+                        .HasForeignKey("SellerId");
+                });
+
             modelBuilder.Entity("Entities.Picture", b =>
                 {
                     b.HasOne("Entities.Product")
@@ -505,6 +667,28 @@ namespace Data.Migrations
                         .WithMany("ShopingCarts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Entities.UserTransaction", b =>
+                {
+                    b.HasOne("Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Entities.WalletLog", b =>
+                {
+                    b.HasOne("Entities.Order", "Order")
+                        .WithMany("WalletLogs")
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("Entities.UserTransaction", "UserTransaction")
+                        .WithMany("WalletLogs")
+                        .HasForeignKey("UserTransactionId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
