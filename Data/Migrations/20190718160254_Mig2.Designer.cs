@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190718160254_Mig2")]
+    partial class Mig2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,13 +89,24 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entities.Comments.CommentVote", b =>
                 {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<long>("CommentId");
 
                     b.Property<string>("UserId");
 
-                    b.HasKey("CommentId", "UserId");
+                    b.Property<int>("Vote");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("CommentId", "UserId")
+                        .IsUnique()
+                        .HasName("Comment_Vote_Group")
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("CommentVotes");
                 });
@@ -146,19 +159,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Followings");
-                });
-
-            modelBuilder.Entity("Entities.Hashtag", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Key");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Hashtags");
                 });
 
             modelBuilder.Entity("Entities.Income", b =>
@@ -317,19 +317,6 @@ namespace Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductCategories");
-                });
-
-            modelBuilder.Entity("Entities.ProductHashtag", b =>
-                {
-                    b.Property<long>("HashtagId");
-
-                    b.Property<long>("ProductId");
-
-                    b.HasKey("HashtagId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductHashtags");
                 });
 
             modelBuilder.Entity("Entities.Role", b =>
@@ -700,8 +687,7 @@ namespace Data.Migrations
 
                     b.HasOne("Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Entities.Follower", b =>
@@ -799,19 +785,6 @@ namespace Data.Migrations
 
                     b.HasOne("Entities.Product", "Product")
                         .WithMany("ProductCategories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.ProductHashtag", b =>
-                {
-                    b.HasOne("Entities.Hashtag", "Hashtag")
-                        .WithMany("ProductHashtags")
-                        .HasForeignKey("HashtagId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entities.Product", "Product")
-                        .WithMany("ProductHashtags")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

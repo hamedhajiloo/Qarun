@@ -58,5 +58,8 @@ namespace Entities
         /// سفارشات  
         /// </summary>
         public virtual ICollection<OrderChild> Orders { get; set; }
+
+        public virtual ICollection<ProductHashtag> ProductHashtags { get; set; }
+
     }
 }

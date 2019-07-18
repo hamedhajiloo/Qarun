@@ -115,8 +115,6 @@ namespace Services
                       InsertDate = sx.InsertDate,
                       Title = sx.Title,
                       Content = sx.Description,
-                      Like = sx.CommentVote.Count(x => x.Vote == Vote.Like),
-                      DisLike = sx.CommentVote.Count(x => x.Vote == Vote.DisLike),
                       UserAvatar = sx.User.Avatar,
                       ReplyCount = sx.Comments.Count
                   }).ToListAsync(cancellationToken);
@@ -154,8 +152,6 @@ namespace Services
                     InsertDate = sx.InsertDate,
                     Title = sx.Title,
                     Content = sx.Description,
-                    Like = sx.CommentVote.Count(x => x.Vote == Vote.Like),
-                    DisLike = sx.CommentVote.Count(x => x.Vote == Vote.DisLike),
                     UserAvatar = sx.User.Avatar,
                     Replies = sx.Comments.Select(p => new CommentDetailDto.RepliesCommentServiceModel()
                     {
@@ -164,8 +160,6 @@ namespace Services
                         InsertDate = p.InsertDate,
                         Title = p.Title,
                         Content = p.Description,
-                        Like = p.CommentVote.Count(x => x.Vote == Vote.Like),
-                        DisLike = p.CommentVote.Count(x => x.Vote == Vote.DisLike),
                         UserAvatar = p.User.Avatar
                     }).ToList()
                 }).FirstOrDefaultAsync(cancellationToken);
@@ -213,8 +207,6 @@ namespace Services
                     Title = x.Title,
                     Content = x.Description,
                     InsertDate = x.InsertDate,
-                    Like = x.CommentVote.Count(v => v.Vote == Vote.Like),
-                    DisLike = x.CommentVote.Count(v => v.Vote == Vote.DisLike),
                     ProductId = x.ProductId,
                     ProductTitle = x.Product.Title,
                     ReplyCount = x.Comments.Count
@@ -240,19 +232,13 @@ namespace Services
         {
             CommentVote commentVote = await _commontVoteRepo.Table.Where(c => c.CommentId == commentId && c.UserId == userId).FirstOrDefaultAsync();
 
-            if (commentVote == null)
-            {
+            
                 await _commontVoteRepo.AddAsync(new CommentVote
                 {
                     UserId = userId,
                     CommentId = commentId,
-                    Vote = vote
                 }, cancellationToken);
-            }
-            else
-            {
-                commentVote.Vote = vote;
-            }
+            
 
             await _commontVoteRepo.UpdateAsync(commentVote, cancellationToken);
         }
@@ -269,8 +255,6 @@ namespace Services
             return await _commentRepo.TableNoTracking.Where(x => x.Id == commentId)
                 .Select(x => new CommentLikeOrDislikeDto
                 {
-                    Like = x.CommentVote.Count(c => c.Vote == Vote.Like),
-                    DisLike = x.CommentVote.Count(c => c.Vote == Vote.DisLike)
 
                 }).FirstOrDefaultAsync(cancellationToken);
         }
