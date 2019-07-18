@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,6 +42,9 @@ namespace Data.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    IsCustomer = table.Column<bool>(nullable: false),
+                    IsSeller = table.Column<bool>(nullable: false),
+                    IsMarketer = table.Column<bool>(nullable: false),
                     DisplayName = table.Column<string>(maxLength: 100, nullable: true),
                     Avatar = table.Column<string>(maxLength: 100, nullable: true),
                     Biography = table.Column<string>(maxLength: 100, nullable: true),
@@ -55,6 +58,7 @@ namespace Data.Migrations
                     ChargeAmount = table.Column<decimal>(nullable: false),
                     SellingAmount = table.Column<decimal>(nullable: false),
                     MarketingAmount = table.Column<decimal>(nullable: false),
+                    OrderLimitation = table.Column<int>(nullable: false),
                     PresenterId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -106,24 +110,6 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files_DefaultLogos", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Price = table.Column<decimal>(nullable: false),
-                    Discount = table.Column<decimal>(nullable: false),
-                    SalesNumber = table.Column<int>(nullable: false),
-                    Like = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -300,6 +286,31 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Price = table.Column<decimal>(nullable: false),
+                    Discount = table.Column<decimal>(nullable: false),
+                    SalesNumber = table.Column<int>(nullable: false),
+                    SellerId = table.Column<string>(nullable: true),
+                    Like = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_AspNetUsers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User_Transactions",
                 columns: table => new
                 {
@@ -419,7 +430,8 @@ namespace Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ProductId = table.Column<long>(nullable: false),
-                    Count = table.Column<int>(nullable: false)
+                    Count = table.Column<int>(nullable: false),
+                    CancelPurchase = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -444,7 +456,9 @@ namespace Data.Migrations
                 {
                     Id = table.Column<long>(nullable: false),
                     OrderId = table.Column<long>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
                     OrderStatus = table.Column<int>(nullable: false),
+                    Reason4DisapprovedDelivery = table.Column<int>(nullable: false),
                     SendDate = table.Column<DateTime>(nullable: true),
                     SellerId = table.Column<string>(nullable: true)
                 },
@@ -461,6 +475,12 @@ namespace Data.Migrations
                         name: "FK_OrderChildren_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderChildren_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -622,6 +642,11 @@ namespace Data.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderChildren_ProductId",
+                table: "OrderChildren",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderChildren_SellerId",
                 table: "OrderChildren",
                 column: "SellerId");
@@ -640,6 +665,11 @@ namespace Data.Migrations
                 name: "IX_ProductCategories_ProductId",
                 table: "ProductCategories",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_SellerId",
+                table: "Products",
+                column: "SellerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShopingCarts_ProductId",

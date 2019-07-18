@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,10 +13,23 @@ namespace Entities
        [ForeignKey(nameof(Id))]
         public virtual UserTransaction UserTransaction { get; set; }
 
+
+        [ForeignKey(nameof(Order))]
         public long OrderId { get; set; }
         public virtual Order Order { get; set; }
 
+
+        [ForeignKey(nameof(Product))]
+        public long ProductId { get; set; }
+        public virtual Product Product { get; set; }
+
+
+
+
         public OrderStatus OrderStatus { get; set; }
+
+
+        public Reason4DisapprovedDelivery Reason4DisapprovedDelivery { get; set; }
 
 
         /// <summary>

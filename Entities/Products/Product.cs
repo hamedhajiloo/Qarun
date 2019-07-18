@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Entities
@@ -37,6 +38,9 @@ namespace Entities
         [EnsureOneElement(ErrorMessage = "حد اقل یک عکس باید ثبت شود")]
         public List<Picture> Pictures { get; set; }
 
+        public string SellerId { get; set; }
+        public virtual User Seller { get; set; }
+
 
 
         public List<Comment> Comments { get; set; }
@@ -49,5 +53,11 @@ namespace Entities
 
         public virtual ICollection<ProductCategory> ProductCategories { get; set; }
 
+
+        
+        /// <summary>
+        /// سفارشات  
+        /// </summary>
+        public virtual ICollection<OrderChild> Orders { get; set; }
     }
 }

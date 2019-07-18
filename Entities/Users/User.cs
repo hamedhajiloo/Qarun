@@ -96,6 +96,10 @@ namespace Entities
         #endregion Properties
 
         #region Relations
+
+        public virtual ICollection<Product> Products { get; set; }
+
+
         public virtual ICollection<ShopingCart> ShopingCarts { get; set; }
 
 
@@ -105,10 +109,6 @@ namespace Entities
         public virtual ICollection<Order> CustomerOrders { get; set; }
 
 
-        /// <summary>
-        /// سفارشات فروشنده 
-        /// </summary>
-        public virtual ICollection<OrderChild> SellerOrders { get; set; }
 
 
         /// <summary>

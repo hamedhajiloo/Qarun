@@ -187,6 +187,10 @@ namespace Data.Migrations
 
                     b.Property<int>("OrderStatus");
 
+                    b.Property<long>("ProductId");
+
+                    b.Property<int>("Reason4DisapprovedDelivery");
+
                     b.Property<string>("SellerId");
 
                     b.Property<DateTime?>("SendDate");
@@ -194,6 +198,8 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("SellerId");
 
@@ -233,10 +239,14 @@ namespace Data.Migrations
 
                     b.Property<int>("SalesNumber");
 
+                    b.Property<string>("SellerId");
+
                     b.Property<string>("Title")
                         .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Products");
                 });
@@ -643,8 +653,13 @@ namespace Data.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Entities.Product", "Product")
+                        .WithMany("Orders")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Entities.User", "Seller")
-                        .WithMany("SellerOrders")
+                        .WithMany()
                         .HasForeignKey("SellerId");
                 });
 
@@ -653,6 +668,13 @@ namespace Data.Migrations
                     b.HasOne("Entities.Product")
                         .WithMany("Pictures")
                         .HasForeignKey("ProductId");
+                });
+
+            modelBuilder.Entity("Entities.Product", b =>
+                {
+                    b.HasOne("Entities.User", "Seller")
+                        .WithMany("Products")
+                        .HasForeignKey("SellerId");
                 });
 
             modelBuilder.Entity("Entities.ProductCategory", b =>
