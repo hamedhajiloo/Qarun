@@ -2,6 +2,9 @@
 
 namespace Entities
 {
+    /// <summary>
+    /// وضعیت سفارش
+    /// </summary>
     public enum OrderStatus
     {
         [Display(Name = "درانتظار تعیین وضعیت پرداخت")]
@@ -10,7 +13,7 @@ namespace Entities
         [Display(Name = "درانتظار تأیید فروشنده")]
         WaitingForDealerApproval = 1,
 
-        [Display(Name = "درحال ازسال")]
+        [Display(Name = "درحال ارسال")]
         Sending = 2,
 
         [Display(Name = "تحویل شده")]

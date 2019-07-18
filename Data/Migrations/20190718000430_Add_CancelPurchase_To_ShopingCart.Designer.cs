@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190717224912_Init")]
-    partial class Init
+    [Migration("20190718000430_Add_CancelPurchase_To_ShopingCart")]
+    partial class Add_CancelPurchase_To_ShopingCart
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -312,6 +312,8 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("CancelPurchase");
+
                     b.Property<int>("Count");
 
                     b.Property<long>("ProductId");
@@ -362,6 +364,12 @@ namespace Data.Migrations
 
                     b.Property<bool>("IsActive");
 
+                    b.Property<bool>("IsCustomer");
+
+                    b.Property<bool>("IsMarketer");
+
+                    b.Property<bool>("IsSeller");
+
                     b.Property<DateTimeOffset?>("LastLoginDate");
 
                     b.Property<double>("Lat");
@@ -388,6 +396,8 @@ namespace Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<string>("PresenterId");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<decimal>("SellingAmount");
@@ -406,6 +416,8 @@ namespace Data.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("PresenterId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -667,6 +679,13 @@ namespace Data.Migrations
                         .WithMany("ShopingCarts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Entities.User", b =>
+                {
+                    b.HasOne("Entities.User", "Presenter")
+                        .WithMany("Followers")
+                        .HasForeignKey("PresenterId");
                 });
 
             modelBuilder.Entity("Entities.UserTransaction", b =>

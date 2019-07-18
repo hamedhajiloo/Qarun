@@ -16,19 +16,19 @@ namespace Entities
         NotSet = 0,
 
         /// <summary>
-        /// پرداخت آنلاین
+        ///پرداخت آنلاین از درگاه
         /// </summary>
-        [Display(Name = "پرداخت آنلاین")]
-        Online = 1,
+        [Display(Name = "پرداخت آنلاین از درگاه")]
+        OnlineBankPort = 1,
 
         /// <summary>
-        /// کیف پول
+        /// پرداخت انلاین پس از تحویل
         /// </summary>
-        [Display(Name = "پرداخت با کیف پول")]
-        WalletCharge = 2,
+        [Display(Name = "پرداخت انلاین پس از تحویل")]
+        OnlineDelivery = 2,
 
         /// <summary>
-        /// کیف پول
+        /// پرداخت نقدی
         /// </summary>
         [Display(Name = "پرداخت نقدی")]
         Cash = 3

@@ -21,6 +21,8 @@ namespace Entities
 
         [Display(Name = "تعداد")]
         public int Count { get; set; }
+
+        public bool CancelPurchase { get; set; }
     }
     #region Config
 

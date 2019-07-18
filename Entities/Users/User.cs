@@ -15,6 +15,24 @@ namespace Entities
     {
         #region Properties
 
+        /// <summary>
+        /// بودن می تواند خرید کند True در صورت 
+        /// </summary>
+        public bool IsCustomer { get; set; }
+
+
+        /// <summary>
+        /// بودن می تواند فروش کند True در صورت 
+        /// </summary>
+        public bool IsSeller { get; set; }
+
+
+        /// <summary>
+        /// بودن می تواند مبلغ حاصل از بازاریابی را برداشت کند True در صورت 
+        /// </summary>
+        public bool IsMarketer { get; set; }
+
+
         [DisplayName("نام نمایشی")]
         [StringLength(100)]
         public string DisplayName { get; set; }
@@ -37,7 +55,7 @@ namespace Entities
         public bool PhoneNumberConfirm { get; set; } = false;
 
         [DisplayName("آدرس ها")]
-        [EnsureOneElement(ErrorMessage ="حد اقل یک آدرس باید وارد شود")]
+        [EnsureOneElement(ErrorMessage = "حد اقل یک آدرس باید وارد شود")]
         public List<Address> Addresses { get; set; }
 
 
@@ -47,7 +65,8 @@ namespace Entities
         /// <summary>
         /// کد شبا
         /// </summary>
-        public string IBAN  { get; set; }
+        public string IBAN { get; set; }
+
 
         [DisplayName("بارکد")]
         public string BarCode { get; set; }
@@ -71,6 +90,9 @@ namespace Entities
         public decimal MarketingAmount { get; set; } = 0;
 
 
+        public OrderLimitation OrderLimitation { get; set; }
+
+
         #endregion Properties
 
         #region Relations
@@ -87,6 +109,19 @@ namespace Entities
         /// سفارشات فروشنده 
         /// </summary>
         public virtual ICollection<OrderChild> SellerOrders { get; set; }
+
+
+        /// <summary>
+        /// مشتریان معرفی شده توسط کاربر
+        /// </summary>
+        public virtual ICollection<User> Followers { get; set; }
+
+
+        [ForeignKey(nameof(Presenter))]
+        public string PresenterId { get; set; }
+        public virtual User Presenter { get; set; }
+
+
 
 
         #endregion

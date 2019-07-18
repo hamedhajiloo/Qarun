@@ -17,6 +17,7 @@ namespace Entities
 
         public OrderStatus OrderStatus { get; set; }
 
+
         /// <summary>
         /// تاریخ ارسال
         /// </summary>

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Entities
 {
+    /// <summary>
+    /// محدودیت های ابلاغ شده از طرف فروشنده برای محصولاتش
+    /// </summary>
     public enum OrderLimitation
     {
         /// <summary>

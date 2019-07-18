@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,11 +54,18 @@ namespace Data.Migrations
                     BarCode = table.Column<string>(nullable: true),
                     ChargeAmount = table.Column<decimal>(nullable: false),
                     SellingAmount = table.Column<decimal>(nullable: false),
-                    MarketingAmount = table.Column<decimal>(nullable: false)
+                    MarketingAmount = table.Column<decimal>(nullable: false),
+                    PresenterId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_AspNetUsers_PresenterId",
+                        column: x => x.PresenterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -571,6 +578,11 @@ namespace Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_PresenterId",
+                table: "AspNetUsers",
+                column: "PresenterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentId",
