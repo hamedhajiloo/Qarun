@@ -23,6 +23,7 @@ namespace Entities
 
         /// <summary>
         /// پرداخت انلاین پس از تحویل
+        /// کیف پول
         /// </summary>
         [Display(Name = "پرداخت انلاین پس از تحویل")]
         OnlineDelivery = 2,

@@ -31,7 +31,7 @@ namespace Entities
         [DisplayName("تخفیف")]
         public decimal Discount { get; set; } = 0;
 
-
+        [DisplayName("تعداد فروش")]
         public int SalesNumber { get; set; } = 0;
 
         [DisplayName("تصاویر")]
@@ -52,7 +52,6 @@ namespace Entities
 
 
         public virtual ICollection<ProductCategory> ProductCategories { get; set; }
-
 
         
         /// <summary>

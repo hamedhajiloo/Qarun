@@ -74,6 +74,14 @@ namespace Entities
         public bool? PaySucceeded { get; set; }
 
 
+        /// <summary>
+        /// سود قارون
+        /// </summary>
+        [ForeignKey(nameof(Income))]
+        public long IncomeId { get; set; }
+        public virtual Income Income { get; set; }
+
+
         public virtual IList<OrderChild> OrderChilds { get; set; }
         public virtual List<WalletLog> WalletLogs { get; set; }
 

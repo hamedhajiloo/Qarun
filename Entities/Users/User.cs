@@ -68,8 +68,9 @@ namespace Entities
         public string IBAN { get; set; }
 
 
-        [DisplayName("بارکد")]
-        public string BarCode { get; set; }
+      
+        public string QRCode { get; set; }
+
 
 
         /// <summary>
@@ -88,6 +89,12 @@ namespace Entities
         /// مبلغ بازاریابی
         /// </summary>
         public decimal MarketingAmount { get; set; } = 0;
+        
+
+        /// <summary>
+        /// مقدار بدهی 
+        /// </summary>
+        public decimal AmountOfDebt { get; set; } = 0;
 
 
         public OrderLimitation OrderLimitation { get; set; }
@@ -109,20 +116,18 @@ namespace Entities
         public virtual ICollection<Order> CustomerOrders { get; set; }
 
 
-
-
         /// <summary>
-        /// مشتریان معرفی شده توسط کاربر
+        /// مشتریان معرفی شده توسط بازاریاب
         /// </summary>
-        public virtual ICollection<User> Followers { get; set; }
+        public virtual ICollection<User> Presented { get; set; }
 
 
         [ForeignKey(nameof(Presenter))]
         public string PresenterId { get; set; }
         public virtual User Presenter { get; set; }
 
-
-
+        public virtual ICollection<Follower> Followers { get; set; }
+        public virtual ICollection<Following> Followings { get; set; }
 
         #endregion
     }

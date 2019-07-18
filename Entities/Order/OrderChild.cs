@@ -24,6 +24,10 @@ namespace Entities
         public virtual Product Product { get; set; }
 
 
+        /// <summary>
+        /// کمسیون قارون از فروش
+        /// </summary>
+        public decimal QarunAmount { get; set; }
 
 
         public OrderStatus OrderStatus { get; set; }
@@ -43,6 +47,8 @@ namespace Entities
         public string SellerId { get; set; }
         [ForeignKey(nameof(SellerId))]
         public virtual User Seller { get; set; }
+
+
 
     }
 }

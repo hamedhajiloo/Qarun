@@ -16,6 +16,9 @@ namespace Entities
         public virtual Category Parent { get; set; }
 
 
+        /// <summary>
+        /// فرزندان
+        /// </summary>
         public ICollection<Category> Categories { get; set; }
 
 
