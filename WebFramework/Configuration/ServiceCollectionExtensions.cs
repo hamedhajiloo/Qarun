@@ -145,7 +145,7 @@ namespace WebFramework
                             context.Fail("Token secuirty stamp is not valid.");
                         }
 
-                        if (!user.IsActive)
+                        if (!user.IsDeleted)
                         {
                             context.Fail("User is not active.");
                         }

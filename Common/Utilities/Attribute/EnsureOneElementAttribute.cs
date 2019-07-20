@@ -19,4 +19,23 @@ namespace Sepehran.Pooshako.Utilities.Attribute
             return false;
         }
     }
+
+
+    public class MaxCount4ListAttribute : ValidationAttribute
+    {
+        private int _max;
+        public MaxCount4ListAttribute(int max)
+        {
+            _max = max;
+        }
+        public override bool IsValid(object value)
+        {
+            var list = value as IList;
+            if (list.Count>_max)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
 }

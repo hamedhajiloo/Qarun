@@ -15,6 +15,21 @@ namespace Entities
     {
         #region Properties
 
+        #region وضعیت فعال و غیر فعال بودن
+
+
+        public bool IsDeleted { get; set; }
+        public bool Blocked { get; set; }
+
+        public DateTime? BlockedDatetime { get; set; }
+
+        public int BlockedCount { get; set; } = 0;
+
+        public BlockeType BlockeType { get; set; }
+        #endregion
+
+
+
         /// <summary>
         /// بودن می تواند خرید کند True در صورت 
         /// </summary>
@@ -45,8 +60,8 @@ namespace Entities
         [StringLength(100)]
         public string Biography { get; set; }
 
-        [DisplayName("وضعیت")]
-        public bool IsActive { get; set; } = true;
+        
+       
 
 
         [DisplayName("آخرین ورود")]
@@ -73,6 +88,10 @@ namespace Entities
 
 
 
+        #region مبالغ پولی
+
+
+
         /// <summary>
         /// مبلغ شارژ دستی
         /// </summary>
@@ -89,12 +108,19 @@ namespace Entities
         /// مبلغ بازاریابی
         /// </summary>
         public decimal MarketingAmount { get; set; } = 0;
-        
+
 
         /// <summary>
         /// مقدار بدهی 
         /// </summary>
         public decimal AmountOfDebt { get; set; } = 0;
+
+
+        public DateTime? StartDebtDateTime { get; set; }
+
+
+
+        #endregion
 
 
         public OrderLimitation OrderLimitation { get; set; }
@@ -128,6 +154,23 @@ namespace Entities
 
         public virtual ICollection<Follower> Followers { get; set; }
         public virtual ICollection<Following> Followings { get; set; }
+
+
+
+        /// <summary>
+        /// لیست افرادی که این کاربر آن ها را ریپورت کرده است
+        /// </summary>
+        [InverseProperty("ReporterUser")]
+        public virtual ICollection<Report> Reporters { get; set; }
+
+
+        /// <summary>
+        /// لیست افرادی که این کاربر را ریپورت کرده اند
+        /// </summary>
+        [InverseProperty("ReportedUser")]
+        public virtual ICollection<Report> Reporteds { get; set; }
+
+
 
         #endregion
     }

@@ -12,6 +12,8 @@ namespace Entities
 {
     public class Product:BaseEntity<long>
     {
+
+
         [DisplayName("عنوان")]
         [Required(ErrorMessage =DataAnotations.EnterMessage)]
         public string Title { get; set; }
@@ -21,6 +23,7 @@ namespace Entities
         [DisplayName("توضیحات")]
         public string Description { get; set; }
 
+        public bool IsDeleted { get; set; }
 
 
         [DisplayName("قیمت")]
@@ -35,7 +38,7 @@ namespace Entities
         public int SalesNumber { get; set; } = 0;
 
         [DisplayName("تصاویر")]
-        [EnsureOneElement(ErrorMessage = "حد اقل یک عکس باید ثبت شود")]
+        [EnsureOneElement(ErrorMessage = "حد اقل یک عکس باید ثبت شود"), MaxCount4List(5)]
         public List<Picture> Pictures { get; set; }
 
         public string SellerId { get; set; }

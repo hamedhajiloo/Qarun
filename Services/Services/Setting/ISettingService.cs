@@ -7,6 +7,6 @@ namespace Services
     public interface ISettingService
     {
         Task<Setting> GetAsync(CancellationToken cancellationToken);
-        Task<bool> EditAsync(CancellationToken cancellationToken, Entities.Setting setting);
+        Task<bool> EditAsync(CancellationToken cancellationToken, Setting setting);
     }
 }
