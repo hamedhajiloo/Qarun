@@ -45,6 +45,8 @@ namespace Entities
         public virtual User Seller { get; set; }
 
 
+        public int Visit { get; set; }
+
 
         public List<Comment> Comments { get; set; }
 
