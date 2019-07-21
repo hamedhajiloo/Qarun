@@ -76,6 +76,28 @@ namespace Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Entities.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProvinceId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Cities");
+                });
+
             modelBuilder.Entity("Entities.Comments.Comment", b =>
                 {
                     b.Property<long>("Id")
@@ -184,15 +206,21 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entities.Income", b =>
                 {
-                    b.Property<long>("Id");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Amount");
+
+                    b.Property<long>("OrderId");
 
                     b.Property<int>("Percentage");
 
                     b.Property<decimal>("SaleAmount");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Incomes");
                 });
@@ -247,8 +275,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("IncomeId")
-                        .IsUnique();
+                    b.HasIndex("IncomeId");
 
                     b.ToTable("Orders");
                 });
@@ -322,6 +349,8 @@ namespace Data.Migrations
                     b.Property<string>("Title")
                         .IsRequired();
 
+                    b.Property<int>("Visit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SellerId");
@@ -353,6 +382,20 @@ namespace Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductHashtags");
+                });
+
+            modelBuilder.Entity("Entities.Province", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Provinces");
                 });
 
             modelBuilder.Entity("Entities.Report", b =>
@@ -492,11 +535,11 @@ namespace Data.Migrations
 
                     b.Property<double>("Lat");
 
-                    b.Property<double>("Lng");
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<double>("Long");
 
                     b.Property<decimal>("MarketingAmount");
 
@@ -718,6 +761,18 @@ namespace Data.Migrations
                         .HasForeignKey("ParentId");
                 });
 
+            modelBuilder.Entity("Entities.City", b =>
+                {
+                    b.HasOne("Entities.Province", "Province")
+                        .WithMany("Cities")
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.User")
+                        .WithMany("Cities")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Entities.Comments.Comment", b =>
                 {
                     b.HasOne("Entities.Comments.Comment", "Parent")
@@ -768,7 +823,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("Entities.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -793,8 +848,8 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Entities.Income", "Income")
-                        .WithOne()
-                        .HasForeignKey("Entities.Order", "IncomeId")
+                        .WithMany()
+                        .HasForeignKey("IncomeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

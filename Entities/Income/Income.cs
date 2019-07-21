@@ -7,7 +7,8 @@ namespace Entities
 {
     public class Income:BaseEntity<long>
     {
-        [ForeignKey(nameof(Id))]
+        [ForeignKey(nameof(Order))]
+        public long OrderId { get; set; }
         public virtual Order Order { get; set; }
 
         /// <summary>

@@ -32,9 +32,9 @@ namespace WebFramework
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options
-                    .UseSqlServer(configuration.GetConnectionString("SqlServer"))
+                    .UseSqlServer(configuration.GetConnectionString("SqlServer"));
                     //Tips
-                    .ConfigureWarnings(warning => warning.Throw(RelationalEventId.QueryClientEvaluationWarning));
+                   // .ConfigureWarnings(warning => warning.Throw(RelationalEventId.QueryClientEvaluationWarning));
             });
         }
 

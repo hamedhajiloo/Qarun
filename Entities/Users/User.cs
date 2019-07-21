@@ -74,8 +74,14 @@ namespace Entities
         public List<Address> Addresses { get; set; }
 
 
+
+        [DisplayName("شهر ها")]
+        [EnsureOneElement(ErrorMessage = "حد اقل یک شهر باید وارد شود")]
+        public List<City> Cities { get; set; }
+
+
         public double Lat { get; set; }
-        public double Lng { get; set; }
+        public double Long { get; set; }
 
         /// <summary>
         /// کد شبا

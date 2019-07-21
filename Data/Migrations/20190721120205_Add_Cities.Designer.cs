@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190718032336_Relations_01")]
-    partial class Relations_01
+    [Migration("20190721120205_Add_Cities")]
+    partial class Add_Cities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,6 +38,27 @@ namespace Data.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("Entities.Baner.Baner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("EndTime");
+
+                    b.Property<string>("Link");
+
+                    b.Property<string>("Picture");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Baners");
+                });
+
             modelBuilder.Entity("Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -55,6 +76,28 @@ namespace Data.Migrations
                     b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Entities.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProvinceId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Entities.Comments.Comment", b =>
@@ -89,24 +132,13 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entities.Comments.CommentVote", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<long>("CommentId");
 
                     b.Property<string>("UserId");
 
-                    b.Property<int>("Vote");
-
-                    b.HasKey("Id");
+                    b.HasKey("CommentId", "UserId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("CommentId", "UserId")
-                        .IsUnique()
-                        .HasName("Comment_Vote_Group")
-                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("CommentVotes");
                 });
@@ -161,11 +193,28 @@ namespace Data.Migrations
                     b.ToTable("Followings");
                 });
 
+            modelBuilder.Entity("Entities.Hashtag", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Key");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Hashtags");
+                });
+
             modelBuilder.Entity("Entities.Income", b =>
                 {
-                    b.Property<long>("Id");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Amount");
+
+                    b.Property<long>("OrderId");
 
                     b.Property<int>("Percentage");
 
@@ -173,7 +222,22 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrderId");
+
                     b.ToTable("Incomes");
+                });
+
+            modelBuilder.Entity("Entities.Like", b =>
+                {
+                    b.Property<long>("ProductId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("ProductId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Entities.Order", b =>
@@ -213,8 +277,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("IncomeId")
-                        .IsUnique();
+                    b.HasIndex("IncomeId");
 
                     b.ToTable("Orders");
                 });
@@ -275,6 +338,8 @@ namespace Data.Migrations
 
                     b.Property<decimal>("Discount");
 
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<int?>("Like");
 
                     b.Property<decimal>("Price");
@@ -285,6 +350,8 @@ namespace Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired();
+
+                    b.Property<int>("Visit");
 
                     b.HasKey("Id");
 
@@ -304,6 +371,52 @@ namespace Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductCategories");
+                });
+
+            modelBuilder.Entity("Entities.ProductHashtag", b =>
+                {
+                    b.Property<long>("HashtagId");
+
+                    b.Property<long>("ProductId");
+
+                    b.HasKey("HashtagId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductHashtags");
+                });
+
+            modelBuilder.Entity("Entities.Province", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Provinces");
+                });
+
+            modelBuilder.Entity("Entities.Report", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ReportedUserId");
+
+                    b.Property<string>("ReporterUserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportedUserId");
+
+                    b.HasIndex("ReporterUserId");
+
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Entities.Role", b =>
@@ -341,15 +454,7 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Amount_Of_Punishment_For_Reserving_The_Book");
-
-                    b.Property<decimal>("Amount_Of_Punishment_For_Returning_The_Book");
-
-                    b.Property<int>("BorrowDay");
-
-                    b.Property<int>("ReservCount");
-
-                    b.Property<int>("ReservDay");
+                    b.Property<int>("UserCount4Report");
 
                     b.HasKey("Id");
 
@@ -397,6 +502,14 @@ namespace Data.Migrations
                     b.Property<string>("Biography")
                         .HasMaxLength(100);
 
+                    b.Property<int>("BlockeType");
+
+                    b.Property<bool>("Blocked");
+
+                    b.Property<int>("BlockedCount");
+
+                    b.Property<DateTime?>("BlockedDatetime");
+
                     b.Property<decimal>("ChargeAmount");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -412,9 +525,9 @@ namespace Data.Migrations
 
                     b.Property<string>("IBAN");
 
-                    b.Property<bool>("IsActive");
-
                     b.Property<bool>("IsCustomer");
+
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<bool>("IsMarketer");
 
@@ -424,11 +537,11 @@ namespace Data.Migrations
 
                     b.Property<double>("Lat");
 
-                    b.Property<double>("Lng");
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<double>("Long");
 
                     b.Property<decimal>("MarketingAmount");
 
@@ -455,6 +568,8 @@ namespace Data.Migrations
                     b.Property<string>("SecurityStamp");
 
                     b.Property<decimal>("SellingAmount");
+
+                    b.Property<DateTime?>("StartDebtDateTime");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -648,6 +763,18 @@ namespace Data.Migrations
                         .HasForeignKey("ParentId");
                 });
 
+            modelBuilder.Entity("Entities.City", b =>
+                {
+                    b.HasOne("Entities.Province", "Province")
+                        .WithMany("Cities")
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.User")
+                        .WithMany("Cities")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Entities.Comments.Comment", b =>
                 {
                     b.HasOne("Entities.Comments.Comment", "Parent")
@@ -674,7 +801,8 @@ namespace Data.Migrations
 
                     b.HasOne("Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Entities.Follower", b =>
@@ -697,7 +825,20 @@ namespace Data.Migrations
                 {
                     b.HasOne("Entities.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Entities.Like", b =>
+                {
+                    b.HasOne("Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -709,8 +850,8 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Entities.Income", "Income")
-                        .WithOne()
-                        .HasForeignKey("Entities.Order", "IncomeId")
+                        .WithMany()
+                        .HasForeignKey("IncomeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -761,6 +902,30 @@ namespace Data.Migrations
                         .WithMany("ProductCategories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Entities.ProductHashtag", b =>
+                {
+                    b.HasOne("Entities.Hashtag", "Hashtag")
+                        .WithMany("ProductHashtags")
+                        .HasForeignKey("HashtagId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.Product", "Product")
+                        .WithMany("ProductHashtags")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Entities.Report", b =>
+                {
+                    b.HasOne("Entities.User", "ReportedUser")
+                        .WithMany("Reporteds")
+                        .HasForeignKey("ReportedUserId");
+
+                    b.HasOne("Entities.User", "ReporterUser")
+                        .WithMany("Reporters")
+                        .HasForeignKey("ReporterUserId");
                 });
 
             modelBuilder.Entity("Entities.ShopingCart", b =>
