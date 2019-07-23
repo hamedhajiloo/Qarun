@@ -13,6 +13,10 @@ namespace Entities
 {
     public class User : IdentityUser, IEntity
     {
+        public User()
+        {
+            CustomUserTokens = new HashSet<CustomUserToken>();
+        }
         #region Properties
 
         #region وضعیت فعال و غیر فعال بودن
@@ -21,7 +25,7 @@ namespace Entities
         public bool IsDeleted { get; set; }
         public bool Blocked { get; set; }
 
-        public DateTime? BlockedDatetime { get; set; }
+        public DateTimeOffset? BlockedDatetime { get; set; }
 
         public int BlockedCount { get; set; } = 0;
 
@@ -67,7 +71,6 @@ namespace Entities
         [DisplayName("آخرین ورود")]
         public DateTimeOffset? LastLoginDate { get; set; } = DateTimeOffset.Now;
 
-        public bool PhoneNumberConfirm { get; set; } = false;
 
         [DisplayName("آدرس ها")]
         [EnsureOneElement(ErrorMessage = "حد اقل یک آدرس باید وارد شود")]
@@ -77,7 +80,8 @@ namespace Entities
 
         [DisplayName("شهر ها")]
         [EnsureOneElement(ErrorMessage = "حد اقل یک شهر باید وارد شود")]
-        public List<City> Cities { get; set; }
+        public virtual ICollection<UserCity> UserCities { get; set; }
+
 
 
         public double Lat { get; set; }
@@ -122,7 +126,7 @@ namespace Entities
         public decimal AmountOfDebt { get; set; } = 0;
 
 
-        public DateTime? StartDebtDateTime { get; set; }
+        public DateTimeOffset? StartDebtDateTime { get; set; }
 
 
 
@@ -160,6 +164,7 @@ namespace Entities
 
         public virtual ICollection<Follower> Followers { get; set; }
         public virtual ICollection<Following> Followings { get; set; }
+        public virtual ICollection<CustomUserToken> CustomUserTokens { get; set; }
 
 
 

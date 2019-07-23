@@ -15,6 +15,8 @@ using Services.CustomMapping;
 using WebFramework.Configuration;
 using WebFramework;
 using WebFramework.Middlewares;
+using WebFramework.Swagger;
+using ElmahCore.Mvc;
 
 namespace Web
 {
@@ -38,7 +40,8 @@ namespace Web
             services.AddCustomIdentity(_siteSetting.IdentitySettings);
             services.AddMyServicesAndRepositories();
             services.AddMinimalMvc();
-            //services.AddElmah(Configuration, _siteSetting);
+            services.AddElmah(Configuration, _siteSetting);
+            services.AddSwagger();
             services.AddHttpContextAccessor();
             services.AddJwtAuthentication(_siteSetting.JwtSettings);
         }
@@ -56,11 +59,15 @@ namespace Web
 
             app.UseHttpsRedirection();
 
-            //app.UseSwaggerAndUI();
+            app.UseSwaggerAndUI();
 
             app.UseAuthentication();
 
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute( name: "default", template: "api/{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute( name: "areas", template: "api/{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

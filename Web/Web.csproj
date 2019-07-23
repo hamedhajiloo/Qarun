@@ -3,15 +3,28 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WebFramework\WebFramework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\" />
+    <Folder Include="Areas\Common\Data\" />
+    <Folder Include="Areas\Common\Models\" />
+    <Folder Include="Areas\Common\Views\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

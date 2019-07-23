@@ -4,6 +4,8 @@ using Common.Utilities;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
+using ElmahCore.Mvc;
+using ElmahCore.Sql;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -64,6 +66,19 @@ namespace WebFramework
             }*/)
             .AddCors()
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+
+        public static void AddElmah(this IServiceCollection services, IConfiguration configuration, SiteSettings siteSetting)
+        {
+            services.AddElmah<SqlErrorLog>(options =>
+            {
+                options.Path = siteSetting.ElmahPath;
+                options.ConnectionString = configuration.GetConnectionString("Elmah");
+                //options.CheckPermissionAction = httpContext =>
+                //{
+                //    return httpContext.User.Identity.IsAuthenticated;
+                //};
+            });
         }
 
         public static void AddJwtAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
@@ -179,6 +194,8 @@ namespace WebFramework
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IDataInitializer, CategoryDataInitializer>();
+            services.AddScoped<IProvinceService, ProvinceService>();
+            services.AddScoped<ICityService, CityService>();
         }
 
     }

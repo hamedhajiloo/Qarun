@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190721120205_Add_Cities")]
-    partial class Add_Cities
+    [Migration("20190722122830_CascadeDelete_On_Cities_In_Province")]
+    partial class CascadeDelete_On_Cities_In_Province
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -89,13 +89,9 @@ namespace Data.Migrations
                     b.Property<string>("Title")
                         .IsRequired();
 
-                    b.Property<string>("UserId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProvinceId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Cities");
                 });
@@ -284,7 +280,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entities.OrderChild", b =>
                 {
-                    b.Property<long>("Id");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("OrderId");
 
@@ -300,6 +298,8 @@ namespace Data.Migrations
 
                     b.Property<DateTime?>("SendDate");
 
+                    b.Property<long>("UserTransactionId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
@@ -307,6 +307,8 @@ namespace Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("SellerId");
+
+                    b.HasIndex("UserTransactionId");
 
                     b.ToTable("OrderChildren");
                 });
@@ -340,7 +342,7 @@ namespace Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<int?>("Like");
+                    b.Property<int>("Like");
 
                     b.Property<decimal>("Price");
 
@@ -557,8 +559,6 @@ namespace Data.Migrations
 
                     b.Property<string>("PhoneNumber");
 
-                    b.Property<bool>("PhoneNumberConfirm");
-
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("PresenterId");
@@ -591,6 +591,19 @@ namespace Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Entities.UserCity", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("CitytId");
+
+                    b.HasKey("UserId", "CitytId");
+
+                    b.HasIndex("CitytId");
+
+                    b.ToTable("UserCities");
+                });
+
             modelBuilder.Entity("Entities.UserTransaction", b =>
                 {
                     b.Property<long>("Id")
@@ -598,6 +611,8 @@ namespace Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CID");
+
+                    b.Property<long>("CustomerOrderId");
 
                     b.Property<DateTime>("InsertDate");
 
@@ -626,6 +641,8 @@ namespace Data.Migrations
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerOrderId");
 
                     b.HasIndex("UserId");
 
@@ -769,10 +786,6 @@ namespace Data.Migrations
                         .WithMany("Cities")
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entities.User")
-                        .WithMany("Cities")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Entities.Comments.Comment", b =>
@@ -857,11 +870,6 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entities.OrderChild", b =>
                 {
-                    b.HasOne("Entities.UserTransaction", "UserTransaction")
-                        .WithOne("CustomerOrder")
-                        .HasForeignKey("Entities.OrderChild", "Id")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Entities.Order", "Order")
                         .WithMany("OrderChilds")
                         .HasForeignKey("OrderId")
@@ -875,6 +883,11 @@ namespace Data.Migrations
                     b.HasOne("Entities.User", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId");
+
+                    b.HasOne("Entities.UserTransaction", "UserTransaction")
+                        .WithMany()
+                        .HasForeignKey("UserTransactionId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Entities.Picture", b =>
@@ -948,8 +961,26 @@ namespace Data.Migrations
                         .HasForeignKey("PresenterId");
                 });
 
+            modelBuilder.Entity("Entities.UserCity", b =>
+                {
+                    b.HasOne("Entities.City", "City")
+                        .WithMany("UserCities")
+                        .HasForeignKey("CitytId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entities.User", "User")
+                        .WithMany("UserCities")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("Entities.UserTransaction", b =>
                 {
+                    b.HasOne("Entities.OrderChild", "CustomerOrder")
+                        .WithMany()
+                        .HasForeignKey("CustomerOrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");

@@ -81,7 +81,12 @@ namespace Entities
         public string UserId { get; set; }
         public virtual User User { get; set; }
 
+
+        [ForeignKey(nameof(CustomerOrder))]
+        public long CustomerOrderId { get; set; }
         public virtual OrderChild CustomerOrder { get; set; }
+
+
         public virtual List<WalletLog> WalletLogs { get; set; }
 
     }

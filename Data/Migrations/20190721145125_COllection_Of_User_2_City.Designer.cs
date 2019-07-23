@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190721145125_COllection_Of_User_2_City")]
+    partial class COllection_Of_User_2_City
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,33 +137,6 @@ namespace Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CommentVotes");
-                });
-
-            modelBuilder.Entity("Entities.CustomUserToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTimeOffset>("AccessTokenExpiresDateTime");
-
-                    b.Property<string>("AccessTokenHash");
-
-                    b.Property<DateTimeOffset>("RefreshTokenExpiresDateTime");
-
-                    b.Property<string>("RefreshTokenIdHash");
-
-                    b.Property<string>("RefreshTokenIdHashSource");
-
-                    b.Property<int>("UserId");
-
-                    b.Property<string>("UserId1");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("CustomUserTokens");
                 });
 
             modelBuilder.Entity("Entities.Files.DefaultLogo", b =>
@@ -535,7 +510,7 @@ namespace Data.Migrations
 
                     b.Property<int>("BlockedCount");
 
-                    b.Property<DateTimeOffset?>("BlockedDatetime");
+                    b.Property<DateTime?>("BlockedDatetime");
 
                     b.Property<decimal>("ChargeAmount");
 
@@ -594,7 +569,7 @@ namespace Data.Migrations
 
                     b.Property<decimal>("SellingAmount");
 
-                    b.Property<DateTimeOffset?>("StartDebtDateTime");
+                    b.Property<DateTime?>("StartDebtDateTime");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -841,13 +816,6 @@ namespace Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Entities.CustomUserToken", b =>
-                {
-                    b.HasOne("Entities.User", "User")
-                        .WithMany("CustomUserTokens")
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Entities.Follower", b =>

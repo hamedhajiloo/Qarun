@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,9 +54,8 @@ namespace Data.Migrations
                     Avatar = table.Column<string>(maxLength: 100, nullable: true),
                     Biography = table.Column<string>(maxLength: 100, nullable: true),
                     LastLoginDate = table.Column<DateTimeOffset>(nullable: true),
-                    PhoneNumberConfirm = table.Column<bool>(nullable: false),
                     Lat = table.Column<double>(nullable: false),
-                    Lng = table.Column<double>(nullable: false),
+                    Long = table.Column<double>(nullable: false),
                     IBAN = table.Column<string>(nullable: true),
                     QRCode = table.Column<string>(nullable: true),
                     ChargeAmount = table.Column<decimal>(nullable: false),
@@ -146,6 +145,19 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Hashtags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Provinces",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provinces", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -335,7 +347,7 @@ namespace Data.Migrations
                     SalesNumber = table.Column<int>(nullable: false),
                     SellerId = table.Column<string>(nullable: true),
                     Visit = table.Column<int>(nullable: false),
-                    Like = table.Column<int>(nullable: true)
+                    Like = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -375,31 +387,26 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User_Transactions",
+                name: "Cities",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Price = table.Column<long>(nullable: false),
-                    InsertDate = table.Column<DateTime>(nullable: false),
-                    ReservationCode = table.Column<string>(nullable: true),
-                    ReferenceNumber = table.Column<string>(nullable: true),
-                    PaymentState = table.Column<int>(nullable: false),
-                    State = table.Column<string>(nullable: true),
-                    PaidDate = table.Column<DateTime>(nullable: true),
-                    Type = table.Column<int>(nullable: false),
-                    PaymentType = table.Column<int>(nullable: false),
-                    TRACENO = table.Column<string>(nullable: true),
-                    RRN = table.Column<string>(nullable: true),
-                    CID = table.Column<string>(nullable: true),
-                    SecurePan = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: false),
+                    ProvinceId = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User_Transactions", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Transactions_AspNetUsers_UserId",
+                        name: "FK_Cities_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
+                        principalTable: "Provinces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cities_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -590,7 +597,9 @@ namespace Data.Migrations
                 name: "OrderChildren",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserTransactionId = table.Column<long>(nullable: false),
                     OrderId = table.Column<long>(nullable: false),
                     ProductId = table.Column<long>(nullable: false),
                     QarunAmount = table.Column<decimal>(nullable: false),
@@ -603,12 +612,6 @@ namespace Data.Migrations
                 {
                     table.PrimaryKey("PK_OrderChildren", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderChildren_User_Transactions_Id",
-                        column: x => x.Id,
-                        principalTable: "User_Transactions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_OrderChildren_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
@@ -617,6 +620,45 @@ namespace Data.Migrations
                     table.ForeignKey(
                         name: "FK_OrderChildren_AspNetUsers_SellerId",
                         column: x => x.SellerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User_Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Price = table.Column<long>(nullable: false),
+                    InsertDate = table.Column<DateTime>(nullable: false),
+                    ReservationCode = table.Column<string>(nullable: true),
+                    ReferenceNumber = table.Column<string>(nullable: true),
+                    PaymentState = table.Column<int>(nullable: false),
+                    State = table.Column<string>(nullable: true),
+                    PaidDate = table.Column<DateTime>(nullable: true),
+                    Type = table.Column<int>(nullable: false),
+                    PaymentType = table.Column<int>(nullable: false),
+                    TRACENO = table.Column<string>(nullable: true),
+                    RRN = table.Column<string>(nullable: true),
+                    CID = table.Column<string>(nullable: true),
+                    SecurePan = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
+                    CustomerOrderId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_User_Transactions_OrderChildren_CustomerOrderId",
+                        column: x => x.CustomerOrderId,
+                        principalTable: "OrderChildren",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_User_Transactions_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -767,6 +809,16 @@ namespace Data.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_ProvinceId",
+                table: "Cities",
+                column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cities_UserId",
+                table: "Cities",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_ParentId",
                 table: "Comments",
                 column: "ParentId");
@@ -810,6 +862,11 @@ namespace Data.Migrations
                 name: "IX_OrderChildren_SellerId",
                 table: "OrderChildren",
                 column: "SellerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderChildren_UserTransactionId",
+                table: "OrderChildren",
+                column: "UserTransactionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
@@ -863,6 +920,11 @@ namespace Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_User_Transactions_CustomerOrderId",
+                table: "User_Transactions",
+                column: "CustomerOrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_Transactions_UserId",
                 table: "User_Transactions",
                 column: "UserId");
@@ -891,6 +953,14 @@ namespace Data.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_OrderChildren_User_Transactions_UserTransactionId",
+                table: "OrderChildren",
+                column: "UserTransactionId",
+                principalTable: "User_Transactions",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Orders_Incomes_IncomeId",
                 table: "Orders",
                 column: "IncomeId",
@@ -902,12 +972,36 @@ namespace Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_OrderChildren_AspNetUsers_SellerId",
+                table: "OrderChildren");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Orders_AspNetUsers_CustomerId",
                 table: "Orders");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_Products_AspNetUsers_SellerId",
+                table: "Products");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_User_Transactions_AspNetUsers_UserId",
+                table: "User_Transactions");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_OrderChildren_Products_ProductId",
+                table: "OrderChildren");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Incomes_Orders_OrderId",
                 table: "Incomes");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_OrderChildren_Orders_OrderId",
+                table: "OrderChildren");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_OrderChildren_User_Transactions_UserTransactionId",
+                table: "OrderChildren");
 
             migrationBuilder.DropTable(
                 name: "Addresses");
@@ -931,6 +1025,9 @@ namespace Data.Migrations
                 name: "Baners");
 
             migrationBuilder.DropTable(
+                name: "Cities");
+
+            migrationBuilder.DropTable(
                 name: "CommentVotes");
 
             migrationBuilder.DropTable(
@@ -944,9 +1041,6 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Likes");
-
-            migrationBuilder.DropTable(
-                name: "OrderChildren");
 
             migrationBuilder.DropTable(
                 name: "Pictures");
@@ -973,6 +1067,9 @@ namespace Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Provinces");
+
+            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -982,19 +1079,22 @@ namespace Data.Migrations
                 name: "Hashtags");
 
             migrationBuilder.DropTable(
-                name: "User_Transactions");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Incomes");
+
+            migrationBuilder.DropTable(
+                name: "User_Transactions");
+
+            migrationBuilder.DropTable(
+                name: "OrderChildren");
         }
     }
 }

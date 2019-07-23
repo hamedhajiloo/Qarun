@@ -10,7 +10,8 @@ namespace Entities
     /// </summary>
     public class OrderChild:BaseEntity<long>
     {
-       [ForeignKey(nameof(Id))]
+        [ForeignKey(nameof(UserTransaction))]
+        public long UserTransactionId { get; set; }
         public virtual UserTransaction UserTransaction { get; set; }
 
 

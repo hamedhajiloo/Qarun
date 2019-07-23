@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,5 +28,10 @@ namespace Entities
         public int ProvinceId { get; set; }
         public virtual Province Province { get; set; }
 
+
+        public virtual ICollection<UserCity> UserCities { get; set; }
+
+
     }
+  
 }

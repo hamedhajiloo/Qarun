@@ -53,7 +53,7 @@ namespace Entities
         public virtual ICollection<ShopingCart> ShopingCarts { get; set; }
 
 
-        public int? Like { get; set; }
+        public int Like { get; set; } = 0;
 
 
         public virtual ICollection<ProductCategory> ProductCategories { get; set; }
